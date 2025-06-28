@@ -1,0 +1,17 @@
+# Directorios de dependencias
+node_modules/
+
+# Archivos de entorno sensibles
+.env
+
+# Archivos de logs o temporales generados
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Archivos específicos de sistemas operativos o IDEs
+.DS_Store # macOS
+.vscode/  # Configuración de VS Code
