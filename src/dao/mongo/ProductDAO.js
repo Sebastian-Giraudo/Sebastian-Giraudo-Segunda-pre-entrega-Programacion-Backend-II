@@ -1,14 +1,15 @@
 // src/dao/mongo/ProductDAO.js
-const Product = require('../models/Product'); // RUTA CORREGIDA: Importa el modelo de Producto desde src/dao/models/Product.js
-
+const Product = require('../models/Product');
 class ProductDAO {
     async getById(productId) {
         try {
             const product = await Product.findById(productId);
             return product;
         } catch (error) {
+
             console.error("Error getting product by ID in DAO:", error);
-            throw new Error("Could not get product by ID in DAO: " + error.message);
+
+            throw new Error("No se pudo obtener el producto por ID en DAO: " + error.message);
         }
     }
 
@@ -16,23 +17,27 @@ class ProductDAO {
         try {
             const product = await Product.findByIdAndUpdate(productId, { stock: newStock }, { new: true });
             if (!product) {
-                throw new Error('Product not found for stock update.');
+                throw new Error('Producto no encontrado para actualización de stock.');
             }
             return product;
         } catch (error) {
+
             console.error("Error updating product stock in DAO:", error);
-            throw new Error("Could not update product stock in DAO: " + error.message);
+
+            throw new Error("No se pudo actualizar el stock del producto en DAO: " + error.message);
         }
     }
 
-    // Métodos CRUD básicos para Product (puedes expandir según tu ProductController)
+    // Métodos CRUD básicos para Product
     async create(productData) {
         try {
             const newProduct = await Product.create(productData);
             return newProduct;
         } catch (error) {
+
             console.error("Error creating product in DAO:", error);
-            throw new Error("Could not create product in DAO: " + error.message);
+
+            throw new Error("No se pudo crear el producto en DAO: " + error.message);
         }
     }
 
@@ -40,12 +45,14 @@ class ProductDAO {
         try {
             const updatedProduct = await Product.findByIdAndUpdate(productId, productData, { new: true });
             if (!updatedProduct) {
-                throw new Error('Product not found for update.');
+                throw new Error('Producto no encontrado para actualización.');
             }
             return updatedProduct;
         } catch (error) {
-            console.error("Error updating product in DAO:", error);
-            throw new Error("Could not update product in DAO: " + error.message);
+
+            console.error("Erros al actualizar el producto en DAO:", error);
+
+            throw new Error("No se pudo actualizar el producto en DAO: " + error.message);
         }
     }
 
@@ -53,12 +60,12 @@ class ProductDAO {
         try {
             const deletedProduct = await Product.findByIdAndDelete(productId);
             if (!deletedProduct) {
-                throw new Error('Product not found for deletion.');
+                throw new Error('Producto no encontrado para eliminar.');
             }
             return deletedProduct;
         } catch (error) {
-            console.error("Error deleting product in DAO:", error);
-            throw new Error("Could not delete product in DAO: " + error.message);
+            console.error("Error al eliminar el producto en DAO:", error);
+            throw new Error("No se pudo eliminar el producto en DAO: " + error.message);
         }
     }
 
@@ -67,8 +74,8 @@ class ProductDAO {
             const products = await Product.find({});
             return products;
         } catch (error) {
-            console.error("Error getting all products in DAO:", error);
-            throw new Error("Could not get all products in DAO: " + error.message);
+            console.error("Error al obtener los productos en DAO:", error);
+            throw new Error("No se pudieron obtener todos los productos en DAO: " + error.message);
         }
     }
 }

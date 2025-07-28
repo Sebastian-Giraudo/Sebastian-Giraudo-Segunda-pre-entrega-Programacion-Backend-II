@@ -1,11 +1,9 @@
-const jwt = require('jsonwebtoken');
+// src/utils/jwt.utils.js
 const config = require('../config/config');
 
-const generateToken = (user) => {
-    // No incluimos la contraseña en el token
-
-    // *** AGREGAR ESTE CONSOLE.LOG AQUÍ ***
-    console.log("JWT_UTILS: User object received by generateToken:", user);
+const generateToken = (user) => {  
+    
+    console.log("JWT_UTILS: Objeto de user recibido por generateToken:", user);
 
     const payload = {
         id: user.id,
@@ -14,10 +12,10 @@ const generateToken = (user) => {
         cart: user.cart 
     };
     
-    console.log("JWT_UTILS: Payload being signed:", payload); // <--- AÑADE ESTE CONSOLE.LOG
-    console.log("Using JWT_PRIVATE_KEY for signing:", config.jwtPrivateKey); // <--- AÑADE ESTA LÍNEA TEMPORALMENTE
+    console.log("JWT_UTILS: Carga útil confirmada:", payload);
+    console.log("Uso de JWT_PRIVATE_KEY para confirmar:", config.jwtPrivateKey); 
 
-    const token = jwt.sign(payload, config.jwtPrivateKey, { expiresIn: '1h' }); // Token expira en 1 hora
+    const token = jwt.sign(payload, config.jwtPrivateKey, { expiresIn: '1h' }); 
     return token;
 };
 
@@ -27,7 +25,7 @@ const verifyToken = (token) => {
         return decoded;
     } catch (error) {
         // Manejar errores de token (expirado, inválido, etc.)
-        console.error("Error verifying token:", error);
+        console.error("Error de verificación de token:", error);
         return null;
     }
 };

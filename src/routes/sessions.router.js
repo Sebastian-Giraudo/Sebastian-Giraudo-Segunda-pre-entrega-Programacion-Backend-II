@@ -1,19 +1,20 @@
+// src/routes/sessions.router.js
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const usersController = require('../controllers/users.controller'); // <--- ¡DESCOMENTAR ESTA LÍNEA!
+const usersController = require('../controllers/users.controller');
 const UserDTO = require('../dto/user.dto');
 
 router.post('/register', passport.authenticate('register', { session: false, failureRedirect: '/failregister' }), (req, res) => {
     // Si el registro es exitoso, Passport pondrá el usuario en req.user
-    res.status(201).json({ status: 'success', message: 'User registered successfully!', user: req.user });
+    res.status(201).json({ status: 'success', message: 'Usuario registrado exitósamente!', user: req.user });
 });
 
 // Ruta para el login de usuarios
 router.post('/login', passport.authenticate('login', { session: false }), (req, res) => {
     res.status(200).json({
         status: 'success',
-        message: 'Login successful',
+        message: 'Acceso correcto',
         user: req.user.user,
         token: req.user.token
     });
@@ -35,7 +36,7 @@ router.get('/current', passport.authenticate('current', { session: false }), (re
 // Ruta para logout
 router.post('/logout', (req, res) => {
     res.clearCookie('coderCookieToken');
-    res.status(200).json({ status: 'success', message: 'Logout successful' });
+    res.status(200).json({ status: 'success', message: 'Cierre exitoso.' });
 });
 
 module.exports = router;

@@ -1,5 +1,5 @@
 // src/repositories/ProductRepository.js
-const ProductDAO = require('../dao/mongo/ProductDAO'); // Importa tu ProductDAO
+const ProductDAO = require('../dao/mongo/ProductDAO');
 
 class ProductRepository {
     constructor(productDAO) {
@@ -14,7 +14,7 @@ class ProductRepository {
         return await this.productDAO.updateStock(productId, newStock);
     }
 
-    // Puedes añadir más métodos CRUD aquí si tu ProductController los necesita
+    
     async createProduct(productData) {
         return await this.productDAO.create(productData);
     }

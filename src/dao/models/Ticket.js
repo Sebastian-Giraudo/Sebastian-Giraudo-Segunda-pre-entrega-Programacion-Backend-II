@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const ticketSchema = new mongoose.Schema({
-    // Código único del ticket (puede ser un UUID o un hash generado)
+    // Código único del ticket
     code: {
         type: String,
         unique: true,
@@ -31,7 +31,7 @@ const ticketSchema = new mongoose.Schema({
             // Referencia al ID del producto
             product: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product', // El 'ref' siempre apunta al nombre del modelo, no a la ruta del archivo
+                ref: 'Product',
                 required: true
             },
             // Cantidad comprada de ese producto

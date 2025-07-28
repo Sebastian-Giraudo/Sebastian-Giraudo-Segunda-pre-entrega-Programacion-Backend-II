@@ -1,17 +1,19 @@
+//src/config/passport.config.js
+
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
 const config = require('./config');
 const UserDAO = require('../dao/mongo/UserDAO');
-const CartDAO = require('../dao/mongo/CartDAO'); // Necesario para instanciar UserRepository
+const CartDAO = require('../dao/mongo/CartDAO'); 
 const { generateToken } = require('../utils/jwt.utils');
 const { createHash, isValidPassword } = require('../utils/utils');
-const UserRepository = require('../repositories/UserRepository'); // <--- Importa la CLASE UserRepository
+const UserRepository = require('../repositories/UserRepository');
 
 // Instanciamos los DAOs
 const userDAO = new UserDAO();
-const cartDAO = new CartDAO(); // Instanciamos el CartDAO
+const cartDAO = new CartDAO();
 
 // Instanciamos el UserRepository con sus DAOs
 const userRepository = new UserRepository(userDAO, cartDAO); 
@@ -23,28 +25,32 @@ const initializePassport = () => {
             try {
                 const user = await userRepository.findUserByEmail(email); 
                 if (!user) {
-                    console.log('User not found with email: ' + email);
-                    return done(null, false, { message: 'Incorrect credentials.' });
+                    console.log('Usuario no encontrado con correo electrónico: ' + email);
+                    return done(null, false, { message: 'Credenciales incorrectas.' });
                 }
                 if (!isValidPassword(user, password)) { 
-                    console.log('Invalid password for user: ' + email);
-                    return done(null, false, { message: 'Incorrect credentials.' });
+                    console.log('Contraseña no válida para el usuario: ' + email);
+                    return done(null, false, { message: 'Credenciales incorrectas.' });
                 }
-                console.log("Passport Login Strategy: User object before generating token:", user);
+
+                console.log("Estrategia de inicio de sesión de Passport: ojeto de usuario antes de generar el token:", user);
+
                 const userForToken = {
                     id: user._id.toString(),
                     first_name: user.first_name,
                     last_name: user.last_name,
                     email: user.email,
                     role: user.role,
-                    cart: user.cart ? user.cart._id.toString() : null // Asegúrate de que el ID del carrito esté aquí
+                    cart: user.cart ? user.cart._id.toString() : null 
                 };
                 const token = generateToken(userForToken);
                 user.token = token;
                 user.user = userForToken;
                 return done(null, user);
             } catch (error) {
-                console.error("Error in 'login' strategy:", error);
+
+                console.error("Error en la estrategia de inicio de sesión:", error);
+
                 return done(error);
             }
         }
@@ -57,8 +63,8 @@ const initializePassport = () => {
             try {
                 const existingUser = await userRepository.findUserByEmail(email);
                 if (existingUser) {
-                    console.log('User already exists with email: ' + email);
-                    return done(null, false, { message: 'User already exists.' });
+                    console.log('El usuario ya existe con el correo: ' + email);
+                    return done(null, false, { message: 'El usuario ya existe.' });
                 }
 
                 const hashedPassword = createHash(password); 
@@ -73,11 +79,11 @@ const initializePassport = () => {
                 };
 
                 const createdUser = await userRepository.registerUser(newUser); 
-                console.log("New user registered via UserRepository:", createdUser);
+                console.log("Nuevo usuario registrado a través de UserRepository:", createdUser);
                 
                 return done(null, createdUser); 
             } catch (error) {
-                console.error("Error in 'register' strategy:", error);
+                console.error("Error en la estrategia de registro:", error);
                 return done(error);
             }
         }
@@ -92,7 +98,7 @@ const initializePassport = () => {
         try {
             const user = await userDAO.findById(jwt_payload.id);
             if (!user) {
-                return done(null, false, { message: 'User not found' });
+                return done(null, false, { message: 'Usuario no encontrado' });
             }
             return done(null, user);
         } catch (error) {
@@ -104,13 +110,13 @@ const initializePassport = () => {
         try {
             const user = await userDAO.findById(jwt_payload.id);
             if (!user) {
-                return done(null, false, { message: 'Token invalid or user not found' });
+                return done(null, false, { message: 'Token inválido o no encontrado.' });
             }
             // Aseguramos que el carrito se adjunte como ID o null para el DTO
             user.cart = user.cart ? user.cart._id.toString() : null; 
             return done(null, user);
         } catch (error) {
-            console.error("Error in 'current' strategy:", error);
+            console.error("Error en la estrategia actual:", error);
             return done(error, false);
         }
     }));

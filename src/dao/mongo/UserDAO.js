@@ -1,11 +1,13 @@
+// src/dao/mongo/UserDAO.js
 const User = require('../models/user.model');
 
 class UserDAO {
     async createUser(userData) {
         try {
-            console.log("UserDAO: Intentando crear usuario con datos (antes de Mongoose.create):", userData); // <--- NUEVO LOG
+
+            console.log("UserDAO: Intentando crear usuario con datos (antes de Mongoose.create):", userData);LOG
             const newUser = await User.create(userData);
-            console.log("UserDAO: Usuario creado exitosamente (con datos de Mongoose):", newUser); // <--- LOG EXISTENTE
+            console.log("UserDAO: Usuario creado exitosamente (con datos de Mongoose):", newUser);
             return newUser;
         } catch (error) {
             console.error("UserDAO: Error al crear usuario en DAO:", error);
@@ -18,6 +20,7 @@ class UserDAO {
             console.log("UserDAO: Buscando usuario por email:", email);
             const user = await User.findOne({ email }).populate('cart');
             console.log("UserDAO: Usuario encontrado por email:", user ? user.email : "No encontrado", "Carrito:", user ? user.cart : "N/A");
+
             return user;
         } catch (error) {
             console.error("UserDAO: Error al buscar usuario por email en DAO:", error);

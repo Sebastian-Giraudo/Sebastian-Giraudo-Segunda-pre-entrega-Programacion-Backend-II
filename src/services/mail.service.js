@@ -1,5 +1,6 @@
+// src/services/mail.service.js
 const nodemailer = require('nodemailer');
-const config = require('../config/config'); // Para acceder a las variables de entorno
+const config = require('../config/config');
 
 // Configuración del transporter de Nodemailer
 const transporter = nodemailer.createTransport({
@@ -11,9 +12,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendPasswordResetEmail = async (to, token) => {
-    const resetLink = `http://localhost:${config.port}/reset-password?token=${token}`; // URL de tu frontend para restablecer contraseña
-    // Nota: La URL real debería apuntar a tu frontend donde el usuario ingresará la nueva contraseña.
-    // Aquí usamos localhost y el puerto del backend como placeholder.
+    const resetLink = `http://localhost:${config.port}/reset-password?token=${token}`; 
 
     const mailOptions = {
         from: config.emailUser,
@@ -33,7 +32,7 @@ const sendPasswordResetEmail = async (to, token) => {
         console.log('Correo de restablecimiento enviado a:', to);
     } catch (error) {
         console.error('Error al enviar el correo de restablecimiento:', error);
-        throw new Error('Could not send password reset email.');
+        throw new Error('No se pudo enviar el email de restablecimiento de contraseña.');
     }
 };
 

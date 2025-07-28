@@ -1,42 +1,42 @@
 // src/controllers/carts.controller.js
 const CartRepository = require('../repositories/CartRepository');
 const ProductRepository = require('../repositories/ProductRepository');
-const Ticket = require('../dao/models/Ticket'); // RUTA CORREGIDA: Importa el modelo de Ticket desde src/dao/models/Ticket.js
-const { v4: uuidv4 } = require('uuid'); // Para generar códigos únicos para los tickets
+const Ticket = require('../dao/models/Ticket');
+const { v4: uuidv4 } = require('uuid');
 
 // Importar los DAOs para pasarlos a los repositorios
 const CartDAO = require('../dao/mongo/CartDAO');
-const ProductDAO = require('../dao/mongo/ProductDAO'); // Importa el ProductDAO desde src/dao/mongo/ProductDAO.js
+const ProductDAO = require('../dao/mongo/ProductDAO'); 
 
 // Instanciamos los repositorios con sus respectivos DAOs
 const cartRepository = new CartRepository(new CartDAO());
 const productRepository = new ProductRepository(new ProductDAO()); 
 
-class CartController { // Aquí definimos la clase CartController
+class CartController {
     // Método para agregar un producto al carrito
     async addProductToCart(req, res) {
         try {
             const { cid, pid } = req.params;
-            const { quantity } = req.body; // Asume que la cantidad viene en el body, si no, por defecto 1
+            const { quantity } = req.body;
 
             if (!quantity || quantity <= 0) {
-                return res.status(400).json({ status: 'error', message: 'Quantity must be a positive number.' });
+                return res.status(400).json({ status: 'error', message: 'La cantidad debe ser un número positivo.' });
             }
 
             const product = await productRepository.getProductById(pid);
             if (!product) {
-                return res.status(404).json({ status: 'error', message: 'Product not found.' });
+                return res.status(404).json({ status: 'error', message: 'Producto no encontrado.' });
             }
 
             if (product.stock < quantity) {
-                return res.status(400).json({ status: 'error', message: `Not enough stock for product ${product.name}. Available: ${product.stock}` });
+                return res.status(400).json({ status: 'error', message: `No hay suficiente stock del producto ${product.name}. Disponible: ${product.stock}` });
             }
 
             const updatedCart = await cartRepository.addProductToCart(cid, pid, quantity);
-            res.status(200).json({ status: 'success', message: 'Product added to cart successfully.', cart: updatedCart });
+            res.status(200).json({ status: 'success', message: 'Producto añadido al carrito correctamente.', cart: updatedCart });
         } catch (error) {
             console.error("Error adding product to cart:", error);
-            res.status(500).json({ status: 'error', message: 'Could not add product to cart: ' + error.message });
+            res.status(500).json({ status: 'error', message: 'No se pudo agregar el producto al carrito: ' + error.message });
         }
     }
 
@@ -46,12 +46,12 @@ class CartController { // Aquí definimos la clase CartController
             const { cid } = req.params;
             const cart = await cartRepository.getPopulatedCart(cid); // Obtener carrito con productos populados
             if (!cart) {
-                return res.status(404).json({ status: 'error', message: 'Cart not found.' });
+                return res.status(404).json({ status: 'error', message: 'Carrito no encontrado.' });
             }
             res.status(200).json({ status: 'success', cart });
         } catch (error) {
             console.error("Error getting cart:", error);
-            res.status(500).json({ status: 'error', message: 'Could not retrieve cart: ' + error.message });
+            res.status(500).json({ status: 'error', message: 'No se pudo recuperar el carrito: ' + error.message });
         }
     }
 
@@ -59,15 +59,15 @@ class CartController { // Aquí definimos la clase CartController
     async purchaseCart(req, res) {
         try {
             const { cid } = req.params;
-            const purchaserEmail = req.user.email; // El email del usuario logueado viene de req.user (Passport)
+            const purchaserEmail = req.user.email;
 
             const cart = await cartRepository.getPopulatedCart(cid);
             if (!cart) {
-                return res.status(404).json({ status: 'error', message: 'Cart not found.' });
+                return res.status(404).json({ status: 'error', message: 'Carrito no encontrado.' });
             }
 
             if (cart.products.length === 0) {
-                return res.status(400).json({ status: 'error', message: 'Cannot purchase an empty cart.' });
+                return res.status(400).json({ status: 'error', message: 'No se puede comprar un carrito vacío.' });
             }
 
             let productsToPurchase = [];
@@ -76,12 +76,12 @@ class CartController { // Aquí definimos la clase CartController
 
             // 1. Verificar stock y procesar productos
             for (const item of cart.products) {
-                // Asegúrate de que item.product es el objeto populado, no solo el ID
-                const productDb = item.product; // Ya populado por getPopulatedCart
+                
+                const productDb = item.product;
 
                 // Si el producto no se populó correctamente o no existe, o si no tiene stock
                 if (!productDb || !productDb._id || typeof productDb.stock === 'undefined') {
-                    productsNotPurchased.push({ product: item.product._id || item.product, quantity: item.quantity, reason: 'Product data missing or not found.' });
+                    productsNotPurchased.push({ product: item.product._id || item.product, quantity: item.quantity, reason: 'Datos del producto faltantes o no encontrados.' });
                     continue;
                 }
 
@@ -90,7 +90,7 @@ class CartController { // Aquí definimos la clase CartController
                     productsToPurchase.push({
                         product: productDb._id,
                         quantity: item.quantity,
-                        price: productDb.price // Usar el precio actual del producto
+                        price: productDb.price
                     });
                     totalAmount += productDb.price * item.quantity;
 
@@ -98,18 +98,18 @@ class CartController { // Aquí definimos la clase CartController
                     productDb.stock -= item.quantity; 
                 } else {
                     // No hay suficiente stock: añadir a la lista de no comprados
-                    productsNotPurchased.push({ product: productDb._id, quantity: item.quantity, reason: `Not enough stock. Available: ${productDb.stock}` });
+                    productsNotPurchased.push({ product: productDb._id, quantity: item.quantity, reason: `No hay suficiente stock. Disponible: ${productDb.stock}` });
                 }
             }
 
             // Si no hay productos para comprar, no se genera ticket
             if (productsToPurchase.length === 0) {
-                return res.status(400).json({ status: 'error', message: 'No products could be purchased due to insufficient stock.', productsNotPurchased });
+                return res.status(400).json({ status: 'error', message: 'No se pudo adquirir ningún producto por falta de stock.', productsNotPurchased });
             }
 
             // 2. Generar Ticket
             const newTicket = await Ticket.create({
-                code: uuidv4(), // Genera un UUID único para el código
+                code: uuidv4(),
                 purchase_datetime: new Date(),
                 amount: totalAmount,
                 purchaser: purchaserEmail,
@@ -136,14 +136,14 @@ class CartController { // Aquí definimos la clase CartController
 
             res.status(200).json({ 
                 status: 'success', 
-                message: 'Purchase completed successfully!', 
+                message: 'Compra completada exitosamente!', 
                 ticket: newTicket, 
                 productsNotPurchased 
             });
 
         } catch (error) {
             console.error("Error during cart purchase:", error);
-            res.status(500).json({ status: 'error', message: 'Could not complete purchase: ' + error.message });
+            res.status(500).json({ status: 'error', message: 'No se pudo completar la compra: ' + error.message });
         }
     }
 }

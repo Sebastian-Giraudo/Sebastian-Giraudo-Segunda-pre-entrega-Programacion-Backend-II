@@ -1,22 +1,22 @@
 // src/routes/products.router.js
 const express = require('express');
 const router = express.Router();
-const passport = require('passport'); // Necesario para la autenticación
-const authorization = require('../middlewares/authorization.middleware'); // Importamos el middleware
-const ProductRepository = require('../repositories/ProductRepository'); // <-- Importar ProductRepository
-const ProductDAO = require('../dao/mongo/ProductDAO'); // <-- Importar ProductDAO (para instanciar el repo)
+const passport = require('passport'); 
+const authorization = require('../middlewares/authorization.middleware');
+const ProductRepository = require('../repositories/ProductRepository'); 
+const ProductDAO = require('../dao/mongo/ProductDAO'); 
 
 // Instanciar el ProductRepository (si no lo haces globalmente)
-const productRepository = new ProductRepository(new ProductDAO()); // <-- Instanciar el repo
+const productRepository = new ProductRepository(new ProductDAO());
 
 // Ruta para OBTENER todos los productos (accesible por cualquiera)
-router.get('/', async (req, res) => { // <-- Añadimos 'async'
+router.get('/', async (req, res) => {
     try {
-        const products = await productRepository.getAllProducts(); // <-- Usamos el repo para obtener todos
-        res.status(200).json({ status: 'success', products }); // <-- Enviamos JSON
+        const products = await productRepository.getAllProducts(); 
+        res.status(200).json({ status: 'success', products }); 
     } catch (error) {
-        console.error("Error getting all products:", error);
-        res.status(500).json({ status: 'error', message: 'Could not retrieve products: ' + error.message });
+        console.error("Error al obtener todos los productos:", error);
+        res.status(500).json({ status: 'error', message: 'No se pudieron recuperar los productos: ' + error.message });
     }
 });
 
@@ -24,14 +24,15 @@ router.get('/', async (req, res) => { // <-- Añadimos 'async'
 router.post('/', 
     passport.authenticate('current', { session: false }), 
     authorization(['admin']), 
-    async (req, res) => { // <-- Añadimos 'async' y aquí deberías guardar el producto real
+    async (req, res) => { 
         try {
-            const newProductData = req.body; // Los datos del producto vienen en el body
-            const newProduct = await productRepository.createProduct(newProductData); // <-- Usamos el repo para crear
-            res.status(201).json({ status: 'success', message: 'Producto creado por ADMIN', product: newProduct }); // <-- Enviamos JSON
+            const newProductData = req.body; 
+            const newProduct = await productRepository.createProduct(newProductData); 
+            res.status(201).json({ status: 'success', message: 'Producto creado por ADMIN', product: newProduct }); 
+
         } catch (error) {
-            console.error("Error creating product:", error);
-            res.status(500).json({ status: 'error', message: 'Could not create product: ' + error.message });
+            console.error("Error al crear el producto:", error);
+            res.status(500).json({ status: 'error', message: 'No se pudo crear el producto: ' + error.message });
         }
     }
 );
@@ -40,15 +41,15 @@ router.post('/',
 router.put('/:pid', 
     passport.authenticate('current', { session: false }), 
     authorization(['admin']), 
-    async (req, res) => { // <-- Añadimos 'async'
+    async (req, res) => { 
         try {
             const { pid } = req.params;
             const productDataToUpdate = req.body;
             const updatedProduct = await productRepository.updateProduct(pid, productDataToUpdate);
             res.status(200).json({ status: 'success', message: 'Producto actualizado por ADMIN', product: updatedProduct });
         } catch (error) {
-            console.error("Error updating product:", error);
-            res.status(500).json({ status: 'error', message: 'Could not update product: ' + error.message });
+            console.error("Error al actualizar el producto:", error);
+            res.status(500).json({ status: 'error', message: 'No se pudo actualizar el producto: ' + error.message });
         }
     }
 );
@@ -57,14 +58,14 @@ router.put('/:pid',
 router.delete('/:pid', 
     passport.authenticate('current', { session: false }), 
     authorization(['admin']), 
-    async (req, res) => { // <-- Añadimos 'async'
+    async (req, res) => { 
         try {
             const { pid } = req.params;
             const deletedProduct = await productRepository.deleteProduct(pid);
             res.status(200).json({ status: 'success', message: 'Producto eliminado por ADMIN', product: deletedProduct });
         } catch (error) {
-            console.error("Error deleting product:", error);
-            res.status(500).json({ status: 'error', message: 'Could not delete product: ' + error.message });
+            console.error("Error al borrar producto:", error);
+            res.status(500).json({ status: 'error', message: 'No se pudo borrar el producto: ' + error.message });
         }
     }
 );

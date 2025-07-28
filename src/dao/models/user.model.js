@@ -1,3 +1,4 @@
+// src/models/user.model.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -6,7 +7,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     age: { type: Number, required: true },
     password: { type: String, required: true },
-    cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' }, // Referencia a Carts
+    cart: { type: mongoose.Schema.Types.ObjectId, ref: 'Cart' },
     role: { type: String, default: 'user' },
     // Recuperación de contraseña
     resetPasswordToken: { type: String, default: null },
