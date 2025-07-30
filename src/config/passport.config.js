@@ -20,7 +20,7 @@ const initializePassport = () => {
                 const { first_name, last_name, age } = req.body;
                 let user = await userRepository.findUserByEmail(username.trim()); 
                 if (user) {
-                    console.log('Usuario ya existe.');
+                    
                     return done(null, false, { message: 'El usuario ya existe.' });
                 }
 
@@ -48,11 +48,11 @@ const initializePassport = () => {
             try {
                 const user = await userRepository.findUserByEmail(email.trim());
                 if (!user) {
-                    console.log('Usuario no existe.');
+                    
                     return done(null, false, { message: 'Usuario no encontrado.' });
                 }
                 if (!isValidPassword(user, password)) {
-                    console.log('Contraseña incorrecta.');
+                    
                     return done(null, false, { message: 'Contraseña incorrecta.' });
                 }
 

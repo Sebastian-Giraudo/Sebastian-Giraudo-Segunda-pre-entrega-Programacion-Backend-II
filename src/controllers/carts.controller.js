@@ -4,27 +4,16 @@ const ProductRepository = require('../repositories/ProductRepository');
 const TicketRepository = require('../repositories/TicketRepository');
 
 class CartController {
-    constructor() {
-        console.log("CartController: Constructor ejecutado.");
+    constructor() {        
         this.cartRepository = new CartRepository();
         this.productRepository = new ProductRepository();
-        this.ticketRepository = new TicketRepository();
-
-        // Puntos de control para verificar si los repositorios están definidos
-        console.log("CartController: this.cartRepository definido?", !!this.cartRepository);
-        console.log("CartController: this.productRepository definido?", !!this.productRepository);
-        console.log("CartController: this.ticketRepository definido?", !!this.ticketRepository);
-
-        
+        this.ticketRepository = new TicketRepository();        
         this.addProductToCart = this.addProductToCart.bind(this);
         this.getCart = this.getCart.bind(this);
         this.purchaseCart = this.purchaseCart.bind(this);
     }
 
     async addProductToCart(req, res) {
-        console.log("CartController: addProductToCart llamado.");
-        
-        console.log("CartController: Dentro de addProductToCart, this.productRepository definido?", !!this.productRepository);
 
         try {
             const { cid, pid } = req.params;
@@ -49,8 +38,7 @@ class CartController {
             const updatedCart = await this.cartRepository.addProductToCart(cid, pid, quantity);
 
             res.status(200).json({ status: 'success', message: 'Producto agregado al carrito exitosamente.', cart: updatedCart });
-        } catch (error) {
-            console.error("CartController: Error al agregar producto al carrito:", error);
+        } catch (error) {            
             
             if (error.message.includes('Stock insuficiente') || error.message.includes('Producto no encontrado')) {
                 return res.status(400).json({ status: 'error', message: error.message });
@@ -69,8 +57,7 @@ class CartController {
             }
 
             res.status(200).json({ status: 'success', cart });
-        } catch (error) {
-            console.error("CartController: Error al obtener el carrito:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'Error interno del servidor al obtener el carrito: ' + error.message });
         }
     }
@@ -101,8 +88,7 @@ class CartController {
                 });
             }
 
-        } catch (error) {
-            console.error("CartController: Error al finalizar la compra:", error);
+        } catch (error) {            
             if (error.message.includes('Carrito no encontrado')) {
                 return res.status(404).json({ status: 'error', message: error.message });
             }

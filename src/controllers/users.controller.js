@@ -33,8 +33,7 @@ class UsersController {
             });
 
             res.status(201).json({ status: 'success', message: 'Usuario registrado exitosamente.', user: newUser });
-        } catch (error) {
-            console.error("Error en UsersController al registrar usuario:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'Error interno del servidor durante el registro: ' + error.message });
         }
     }
@@ -54,8 +53,7 @@ class UsersController {
 
             
             res.status(200).json({ status: 'success', message: 'Login exitoso', user: user }); 
-        } catch (error) {
-            console.error("Error en UsersController al iniciar sesión:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'Error interno del servidor durante el login: ' + error.message });
         }
     }
@@ -75,16 +73,14 @@ class UsersController {
             }
 
             // Generar un token único
-            const resetToken = crypto.randomBytes(32).toString('hex');
-            
+            const resetToken = crypto.randomBytes(32).toString('hex');            
             const resetExpires = Date.now() + 3600000; 
 
             await this.userRepository.setResetPasswordToken(user._id, resetToken, resetExpires);
             await this.mailService.sendPasswordResetEmail(user.email, resetToken);
 
             res.status(200).json({ status: 'success', message: 'Si el correo electrónico está registrado, recibirás un enlace para restablecer tu contraseña.' });
-        } catch (error) {
-            console.error("Error en UsersController al solicitar restablecimiento de contraseña:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'Error interno del servidor al solicitar el restablecimiento de contraseña: ' + error.message });
         }
     }
@@ -121,8 +117,7 @@ class UsersController {
             await this.userRepository.clearResetPasswordToken(user._id);
 
             res.status(200).json({ status: 'success', message: 'Contraseña restablecida exitosamente.' });
-        } catch (error) {
-            console.error("Error en UsersController al restablecer contraseña:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'Error interno del servidor al restablecer la contraseña: ' + error.message });
         }
     }

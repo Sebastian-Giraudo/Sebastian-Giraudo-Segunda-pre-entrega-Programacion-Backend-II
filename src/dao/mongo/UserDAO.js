@@ -4,41 +4,37 @@ const User = require('../models/user.model');
 class UserDAO {
     async createUser(userData) {
         try {
-            console.log("UserDAO: Intentando crear usuario con datos (antes de Mongoose.create):", userData);
-            const newUser = await User.create(userData);
-            console.log("UserDAO: Usuario creado exitosamente (con datos de Mongoose):", newUser);
+            
+            const newUser = await User.create(userData);            
             return newUser;
         } catch (error) {
-            console.error("UserDAO: Error al crear usuario en DAO:", error);
+            
             throw new Error("No se pudo crear el usuario en DAO: " + error.message);
         }
     }
 
     async findByEmail(email) {
         try {
-            console.log("UserDAO: Buscando usuario por email:", email);
-            const user = await User.findOne({ email }).populate('cart');
-            console.log("UserDAO: Usuario encontrado por email:", user ? user.email : "No encontrado", "Carrito:", user ? user.cart : "N/A");
+            
+            const user = await User.findOne({ email }).populate('cart');            
             return user;
-        } catch (error) {
-            console.error("UserDAO: Error al buscar usuario por email en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudo encontrar el usuario por email en DAO: " + error.message);
         }
     }
 
     async findById(id) {
         try {
-            console.log("UserDAO: Buscando usuario por ID:", id);
-            const user = await User.findById(id).populate('cart');
-            console.log("UserDAO: Usuario encontrado por ID:", user ? user.email : "No encontrado", "Carrito:", user ? user.cart : "N/A");
+            
+            const user = await User.findById(id).populate('cart');            
             return user;
         } catch (error) {
-            console.error("UserDAO: Error al buscar usuario por ID en DAO:", error);
+            
             throw new Error("No se pudo encontrar el usuario por ID en DAO: " + error.message);
         }
     }
 
-    // Nuevo método para actualizar un usuario por su ID
+    // Método para actualizar un usuario por su ID
     async update(id, dataToUpdate) {
         try {
             const updatedUser = await User.findByIdAndUpdate(id, dataToUpdate, { new: true });
@@ -46,8 +42,7 @@ class UserDAO {
                 throw new Error('Usuario no encontrado para actualizar.');
             }
             return updatedUser;
-        } catch (error) {
-            console.error("UserDAO: Error al actualizar usuario en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudo actualizar el usuario en DAO: " + error.message);
         }
     }

@@ -21,7 +21,6 @@ router.post('/login', passport.authenticate('login', { session: false }), (req, 
 });
 
 router.post('/forgot-password', usersController.requestPasswordReset);
-
 router.post('/reset-password', usersController.resetPassword);
 
 router.get('/current', passport.authenticate('current', { session: false }), (req, res) => {

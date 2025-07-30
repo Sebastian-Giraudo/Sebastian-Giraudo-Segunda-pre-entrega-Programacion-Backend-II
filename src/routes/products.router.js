@@ -6,7 +6,7 @@ const authorization = require('../middlewares/authorization.middleware');
 const ProductRepository = require('../repositories/ProductRepository'); 
 const ProductDAO = require('../dao/mongo/ProductDAO'); 
 
-// Instanciar el ProductRepository (si no lo haces globalmente)
+// Instanciar el ProductRepository
 const productRepository = new ProductRepository(new ProductDAO());
 
 // Ruta para OBTENER todos los productos (accesible por cualquiera)
@@ -14,8 +14,7 @@ router.get('/', async (req, res) => {
     try {
         const products = await productRepository.getAllProducts(); 
         res.status(200).json({ status: 'success', products }); 
-    } catch (error) {
-        console.error("Error al obtener todos los productos:", error);
+    } catch (error) {        
         res.status(500).json({ status: 'error', message: 'No se pudieron recuperar los productos: ' + error.message });
     }
 });
@@ -30,8 +29,7 @@ router.post('/',
             const newProduct = await productRepository.createProduct(newProductData); 
             res.status(201).json({ status: 'success', message: 'Producto creado por ADMIN', product: newProduct }); 
 
-        } catch (error) {
-            console.error("Error al crear el producto:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'No se pudo crear el producto: ' + error.message });
         }
     }
@@ -47,8 +45,7 @@ router.put('/:pid',
             const productDataToUpdate = req.body;
             const updatedProduct = await productRepository.updateProduct(pid, productDataToUpdate);
             res.status(200).json({ status: 'success', message: 'Producto actualizado por ADMIN', product: updatedProduct });
-        } catch (error) {
-            console.error("Error al actualizar el producto:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'No se pudo actualizar el producto: ' + error.message });
         }
     }
@@ -63,8 +60,7 @@ router.delete('/:pid',
             const { pid } = req.params;
             const deletedProduct = await productRepository.deleteProduct(pid);
             res.status(200).json({ status: 'success', message: 'Producto eliminado por ADMIN', product: deletedProduct });
-        } catch (error) {
-            console.error("Error al borrar producto:", error);
+        } catch (error) {            
             res.status(500).json({ status: 'error', message: 'No se pudo borrar el producto: ' + error.message });
         }
     }

@@ -1,35 +1,29 @@
 // src/dao/mongo/CartDAO.js
 const Cart = require('../models/cart.model');
-const Product = require('../models/Product'); 
+const Product = require('../models/product.model'); 
 
 class CartDAO {
     // Método para crear un nuevo carrito vacío
     async create() {
         try {
-            const newCart = await Cart.create({});
-            console.log("CartDAO: Carrito creado exitosamente:", newCart);
+            const newCart = await Cart.create({});            
             return newCart;
-        } catch (error) {
-            console.error("CartDAO: Error al crear el carrito en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudo crear el carrito en DAO: " + error.message);
         }
     }
 
     // Método para obtener el carrito con los detalles completos de los productos (populados)
     async getPopulatedCart(cartId) {
-        try {
-            console.log("CartDAO: getPopulatedCart - Buscando carrito con ID:", cartId);
-            // Popula los productos dentro del carrito para obtener sus detalles completos
-            const cart = await Cart.findById(cartId).populate('products.product');
-            console.log("CartDAO: getPopulatedCart - Carrito de la DB:", cart);
+        try {            
+            const cart = await Cart.findById(cartId).populate('products.product');            
             return cart;
-        } catch (error) {
-            console.error("CartDAO: Error al obtener carrito populado en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudo obtener el carrito populado en DAO: " + error.message);
         }
     }
 
-    // Nuevo método para agregar un producto al carrito (o actualizar su cantidad)
+    // Método para agregar un producto al carrito (o actualizar su cantidad)
     async addProduct(cartId, productId, quantity) {
         try {
             const cart = await Cart.findById(cartId);
@@ -49,13 +43,12 @@ class CartDAO {
 
             await cart.save();
             return cart;
-        } catch (error) {
-            console.error("CartDAO: Error al añadir producto al carrito en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudo añadir producto al carrito en DAO: " + error.message);
         }
     }
 
-    // Nuevo método para actualizar la lista completa de productos de un carrito
+    // Método para actualizar la lista completa de productos de un carrito
     async updateProductsInCart(cartId, newProductsArray) {
         try {
             const updatedCart = await Cart.findByIdAndUpdate(
@@ -67,8 +60,7 @@ class CartDAO {
                 throw new Error('Carrito no encontrado para actualizar productos.');
             }
             return updatedCart;
-        } catch (error) {
-            console.error("CartDAO: Error al actualizar productos del carrito en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudieron actualizar los productos del carrito en DAO: " + error.message);
         }
     }

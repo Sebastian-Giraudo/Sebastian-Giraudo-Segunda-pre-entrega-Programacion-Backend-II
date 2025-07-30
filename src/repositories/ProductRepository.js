@@ -7,13 +7,11 @@ class ProductRepository {
         this.dao = new ProductDAO();
     }
 
-    async getProductById(productId) {
-        
+    async getProductById(productId) {        
         return await this.dao.getById(productId);
     }
 
-    async updateProductStock(productId, newStock) {
-        
+    async updateProductStock(productId, newStock) {        
         return await this.dao.updateStock(productId, newStock);
     }
 
@@ -29,8 +27,7 @@ class ProductRepository {
         return await this.dao.delete(productId);
     }
 
-    async getAllProducts() {
-        
+    async getAllProducts() {        
         return await this.dao.getAll();
     }
 }

@@ -1,13 +1,11 @@
 // src/dao/mongo/ProductDAO.js
-const Product = require('../models/Product');
+const Product = require('../models/product.model');
 class ProductDAO {
     async getById(productId) {
         try {
             const product = await Product.findById(productId);
             return product;
-        } catch (error) {
-
-            console.error("Error getting product by ID in DAO:", error);
+        } catch (error) {            
 
             throw new Error("No se pudo obtener el producto por ID en DAO: " + error.message);
         }
@@ -20,9 +18,7 @@ class ProductDAO {
                 throw new Error('Producto no encontrado para actualización de stock.');
             }
             return product;
-        } catch (error) {
-
-            console.error("Error updating product stock in DAO:", error);
+        } catch (error) {            
 
             throw new Error("No se pudo actualizar el stock del producto en DAO: " + error.message);
         }
@@ -33,9 +29,7 @@ class ProductDAO {
         try {
             const newProduct = await Product.create(productData);
             return newProduct;
-        } catch (error) {
-
-            console.error("Error creating product in DAO:", error);
+        } catch (error) {            
 
             throw new Error("No se pudo crear el producto en DAO: " + error.message);
         }
@@ -48,9 +42,7 @@ class ProductDAO {
                 throw new Error('Producto no encontrado para actualización.');
             }
             return updatedProduct;
-        } catch (error) {
-
-            console.error("Erros al actualizar el producto en DAO:", error);
+        } catch (error) {            
 
             throw new Error("No se pudo actualizar el producto en DAO: " + error.message);
         }
@@ -64,7 +56,7 @@ class ProductDAO {
             }
             return deletedProduct;
         } catch (error) {
-            console.error("Error al eliminar el producto en DAO:", error);
+            
             throw new Error("No se pudo eliminar el producto en DAO: " + error.message);
         }
     }
@@ -73,8 +65,7 @@ class ProductDAO {
         try {
             const products = await Product.find({});
             return products;
-        } catch (error) {
-            console.error("Error al obtener los productos en DAO:", error);
+        } catch (error) {            
             throw new Error("No se pudieron obtener todos los productos en DAO: " + error.message);
         }
     }

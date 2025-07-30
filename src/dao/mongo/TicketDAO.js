@@ -4,27 +4,22 @@ const TicketModel = require('../../dao/models/ticket.model');
 class TicketDAO {
     async create(ticketData) {
         try {
-            const newTicket = await TicketModel.create(ticketData);
-            console.log('TicketDAO: Ticket creado exitosamente:', newTicket);
+            const newTicket = await TicketModel.create(ticketData);            
             return newTicket;
-        } catch (error) {
-            console.error('TicketDAO: Error al crear ticket:', error);
+        } catch (error) {            
             throw error;
         }
     }
 
     async getById(id) {
         try {
-            const ticket = await TicketModel.findById(id).lean();
-            console.log('TicketDAO: Ticket encontrado por ID:', ticket);
+            const ticket = await TicketModel.findById(id).lean();            
             return ticket;
-        } catch (error) {
-            console.error('TicketDAO: Error al buscar ticket por ID:', error);
+        } catch (error) {          
+            
             throw error;
         }
-    }
-
-    
+    }    
 }
 
 module.exports = TicketDAO;

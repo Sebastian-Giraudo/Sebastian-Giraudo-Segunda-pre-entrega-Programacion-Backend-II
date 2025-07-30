@@ -14,8 +14,7 @@ class CartRepository {
     async getPopulatedCart(cartId) {
         try {
             return await this.cartDAO.getPopulatedCart(cartId);
-        } catch (error) {
-            console.error("CartRepository: Error al obtener carrito populado en repositorio:", error);
+        } catch (error) {            
             throw new Error("No se pudo obtener el carrito populado: " + error.message);
         }
     }
@@ -32,8 +31,7 @@ class CartRepository {
             }
 
             return await this.cartDAO.addProduct(cartId, productId, quantity);
-        } catch (error) {
-            console.error("CartRepository: Error al añadir producto al carrito en repositorio:", error);
+        } catch (error) {            
             throw new Error("No se pudo añadir producto al carrito: " + error.message);
         }
     }
@@ -42,8 +40,7 @@ class CartRepository {
     async updateCartProducts(cartId, newProductsArray) {
         try {
             return await this.cartDAO.updateProductsInCart(cartId, newProductsArray);
-        } catch (error) {
-            console.error("CartRepository: Error al actualizar productos del carrito en repositorio:", error);
+        } catch (error) {            
             throw new Error("No se pudieron actualizar los productos del carrito: " + error.message);
         }
     }
@@ -61,7 +58,7 @@ class CartRepository {
 
             
             if (!Array.isArray(cart.products)) {
-                console.warn("CartRepository: cart.products no es un array. Carrito:", cart);
+                
                 
                 return { ticket: null, productsNotPurchased: [] };
             }
@@ -69,7 +66,7 @@ class CartRepository {
             for (const item of cart.products) {
                 
                 if (!item.product || !item.product._id) {
-                    console.warn("CartRepository: Producto no populado o incompleto en el carrito. Item:", item);
+                    
                     productsNotPurchased.push(item); 
                     continue; 
                 }
