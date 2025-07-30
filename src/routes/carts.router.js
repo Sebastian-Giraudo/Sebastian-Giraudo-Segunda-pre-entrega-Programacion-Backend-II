@@ -1,9 +1,9 @@
 // src/routes/carts.router.js
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
 const authorization = require('../middlewares/authorization.middleware');
 const CartController = require('../controllers/carts.controller');
+const passport = require('passport');
 
 // Instanciamos el controlador
 const cartController = new CartController();

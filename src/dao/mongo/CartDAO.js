@@ -1,23 +1,75 @@
 // src/dao/mongo/CartDAO.js
-const Cart = require('../models/cart.model'); 
+const Cart = require('../models/cart.model');
 const Product = require('../models/Product'); 
 
 class CartDAO {
-    
+    // Método para crear un nuevo carrito vacío
+    async create() {
+        try {
+            const newCart = await Cart.create({});
+            console.log("CartDAO: Carrito creado exitosamente:", newCart);
+            return newCart;
+        } catch (error) {
+            console.error("CartDAO: Error al crear el carrito en DAO:", error);
+            throw new Error("No se pudo crear el carrito en DAO: " + error.message);
+        }
+    }
 
     // Método para obtener el carrito con los detalles completos de los productos (populados)
     async getPopulatedCart(cartId) {
         try {
-
             console.log("CartDAO: getPopulatedCart - Buscando carrito con ID:", cartId);
             // Popula los productos dentro del carrito para obtener sus detalles completos
             const cart = await Cart.findById(cartId).populate('products.product');
-            console.log("CartDAO: getPopulatedCart - Carrito de la DB:", cart); 
-
+            console.log("CartDAO: getPopulatedCart - Carrito de la DB:", cart);
             return cart;
         } catch (error) {
-            console.error("CartDAO: Error getting populated cart in DAO:", error);
-            throw new Error("No se pudo completar el carrito en DAO: " + error.message);
+            console.error("CartDAO: Error al obtener carrito populado en DAO:", error);
+            throw new Error("No se pudo obtener el carrito populado en DAO: " + error.message);
+        }
+    }
+
+    // Nuevo método para agregar un producto al carrito (o actualizar su cantidad)
+    async addProduct(cartId, productId, quantity) {
+        try {
+            const cart = await Cart.findById(cartId);
+            if (!cart) {
+                throw new Error('Carrito no encontrado.');
+            }
+
+            const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+
+            if (productIndex !== -1) {
+                // Si el producto ya existe en el carrito, actualiza la cantidad
+                cart.products[productIndex].quantity += quantity;
+            } else {
+                // Si el producto no existe, agrégalo
+                cart.products.push({ product: productId, quantity });
+            }
+
+            await cart.save();
+            return cart;
+        } catch (error) {
+            console.error("CartDAO: Error al añadir producto al carrito en DAO:", error);
+            throw new Error("No se pudo añadir producto al carrito en DAO: " + error.message);
+        }
+    }
+
+    // Nuevo método para actualizar la lista completa de productos de un carrito
+    async updateProductsInCart(cartId, newProductsArray) {
+        try {
+            const updatedCart = await Cart.findByIdAndUpdate(
+                cartId,
+                { products: newProductsArray },
+                { new: true } 
+            );
+            if (!updatedCart) {
+                throw new Error('Carrito no encontrado para actualizar productos.');
+            }
+            return updatedCart;
+        } catch (error) {
+            console.error("CartDAO: Error al actualizar productos del carrito en DAO:", error);
+            throw new Error("No se pudieron actualizar los productos del carrito en DAO: " + error.message);
         }
     }
 }

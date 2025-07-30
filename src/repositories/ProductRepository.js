@@ -1,34 +1,37 @@
 // src/repositories/ProductRepository.js
-const ProductDAO = require('../dao/mongo/ProductDAO');
+const ProductDAO = require('../dao/mongo/ProductDAO'); 
 
 class ProductRepository {
-    constructor(productDAO) {
-        this.productDAO = productDAO;
+    
+    constructor() {
+        this.dao = new ProductDAO();
     }
 
     async getProductById(productId) {
-        return await this.productDAO.getById(productId);
+        
+        return await this.dao.getById(productId);
     }
 
     async updateProductStock(productId, newStock) {
-        return await this.productDAO.updateStock(productId, newStock);
+        
+        return await this.dao.updateStock(productId, newStock);
     }
 
-    
     async createProduct(productData) {
-        return await this.productDAO.create(productData);
+        return await this.dao.create(productData);
     }
 
     async updateProduct(productId, productData) {
-        return await this.productDAO.update(productId, productData);
+        return await this.dao.update(productId, productData);
     }
 
     async deleteProduct(productId) {
-        return await this.productDAO.delete(productId);
+        return await this.dao.delete(productId);
     }
 
     async getAllProducts() {
-        return await this.productDAO.getAll();
+        
+        return await this.dao.getAll();
     }
 }
 
